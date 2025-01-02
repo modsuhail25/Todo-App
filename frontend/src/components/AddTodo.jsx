@@ -2,21 +2,31 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import { useAddTodoMutation } from "../slices/todoApiSlice";
 
 function AddTodo({ getTodos }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [isLoading, setIsloading] = useState(false);
+  // const [isLoading, setIsloading] = useState(false);
+
+  const [addTodo, { isLoading }] = useAddTodoMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setIsloading(true);
-    await axios.post("/api/todo", { title, desc });
-    setIsloading(false);
-    setDesc("");
-    setTitle("");
-    toast.success("Added Successfully");
-    getTodos();
+
+    if (!title && !desc) {
+      toast.error("Title and Desc Required");
+    } else {
+      await addTodo({ title, desc });
+
+      // setIsloading(true);
+      // await axios.post("/api/todo", { title, desc });
+      // setIsloading(false);
+      // getTodos();
+      setDesc("");
+      setTitle("");
+      toast.success("Added Successfully");
+    }
   };
 
   return (

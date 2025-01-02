@@ -2,17 +2,28 @@ import { FaEdit, FaTrash, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import {
+  useDeleteTodoMutation,
+  useUpdateTodoMutation,
+} from "../slices/todoApiSlice";
 
 function TodoList({ todos, getTodos }) {
+  const [deleteTodo] = useDeleteTodoMutation();
+
+  const [updateTodo] = useUpdateTodoMutation();
+
   const deleteHandler = async (id) => {
-    await axios.delete(`/api/todo/${id}`);
+    await deleteTodo(id);
     toast.error("Deleted");
-    getTodos();
+
+    // await axios.delete(`/api/todo/${id}`);
+    // getTodos();
   };
 
   const completeHandler = async (id) => {
-    await axios.patch(`/api/todo/${id}`, { status: "completed" });
-    getTodos();
+    await updateTodo({ status: "completed", id });
+    // await axios.patch(`/api/todo/${id}`, { status: "completed" });
+    // getTodos();
   };
 
   return (

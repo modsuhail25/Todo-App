@@ -3,39 +3,53 @@ import Loader from "../components/Loader";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  useGetTodoQuery,
+  useGetTodosQuery,
+  useUpdateTodoMutation,
+} from "../slices/todoApiSlice";
 
 function UpdateTodo() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [status, setStatus] = useState("pending");
-  const [isLoading, setIsLoading] = useState(false);
-
-  console.log(status);
-
-  const navigate = useNavigate();
+  // const [isLoading, setIsLoading] = useState(false);
 
   const { id } = useParams();
 
-  const getTodo = async () => {
-    const res = await axios.get(`/api/todo/${id}`);
+  const { data: todo } = useGetTodoQuery(id);
+  const { refetch } = useGetTodosQuery();
+  const [updateTodo, { isLoading }] = useUpdateTodoMutation();
 
-    setDesc(res.data.desc);
-    setTitle(res.data.title);
-    setStatus(res.data.status);
-  };
+  const navigate = useNavigate();
+
+  // const getTodo = async () => {
+  //   const res = await axios.get(`/api/todo/${id}`);
+
+  //   setDesc(res.data.desc);
+  //   setTitle(res.data.title);
+  //   setStatus(res.data.status);
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    await axios.patch(`/api/todo/${id}`, { title, desc, status });
-    setIsLoading(false);
+    await updateTodo({ title, desc, status, id });
+    // setIsLoading(true);
+    // await axios.patch(`/api/todo/${id}`, { title, desc, status });
+    // setIsLoading(false);
+    refetch();
     navigate("/");
     toast.success("Updated Succesfully");
   };
 
   useEffect(() => {
-    getTodo();
-  }, []);
+    if (todo) {
+      setDesc(todo.desc);
+      setTitle(todo.title);
+      setStatus(todo.status);
+    }
+    // getTodo();
+  }, [todo]);
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
