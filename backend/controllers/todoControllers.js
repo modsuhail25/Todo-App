@@ -6,7 +6,6 @@ const addTodo = async (req, res) => {
   const todo = await Todo.create({
     title,
     desc,
-    status: true,
   });
 
   res.json(todo);
@@ -35,12 +34,13 @@ const deleteTodo = async (req, res) => {
 const updateTodo = async (req, res) => {
   const { id } = req.params;
 
-  const { title, desc } = req.body;
+  const { title, desc, status } = req.body;
 
   const todo = await Todo.findById(id);
 
   todo.title = title || todo.title;
   todo.desc = desc || todo.desc;
+  todo.status = status || todo.status;
 
   const updatedTodo = await todo.save();
 
