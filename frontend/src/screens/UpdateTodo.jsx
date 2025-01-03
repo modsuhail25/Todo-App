@@ -19,6 +19,7 @@ function UpdateTodo() {
 
   const { data: todo } = useGetTodoQuery(id);
   const { refetch } = useGetTodosQuery();
+
   const [updateTodo, { isLoading }] = useUpdateTodoMutation();
 
   const navigate = useNavigate();
