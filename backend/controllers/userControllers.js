@@ -41,7 +41,7 @@ const authUser = asyncHandler(async (req, res, next) => {
 
   if (user && (await user.matchPassword(password))) {
     // generate token
-    let token = jwt.sign({ userId: user._id }, "12345", {
+    let token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "1d",
     });
 
